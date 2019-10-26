@@ -1,15 +1,14 @@
-require "Win32API"
+require "fiddle/import"
 
 module Eneroth
   module ViewportResizer2
     # Resize window on Windows.
     module WindowWindows
-
       # Maximize window.
       #
       # @return [void]
       def self.maximize
-        ShowWindow.call(window, SW_MAXIMIZE)
+        User32::ShowWindow(window, User32::SW_MAXIMIZE)
       end
 
       # Get window size.
@@ -26,7 +25,7 @@ module Eneroth
       #
       # @return [void]
       def self.restore
-        ShowWindow.call(window, SW_RESTORE)
+        User32::ShowWindow(window, User32::SW_RESTORE)
       end
 
       # Set window size.
@@ -37,30 +36,11 @@ module Eneroth
       # @return [void]
       def self.resize(width, height)
         restore
-
         left, top = rectangle
-        MoveWindow.call(window, left, top, width, height, 1)
+        User32::MoveWindow(window, left, top, width, height, 1)
       end
 
       # Private
-
-      GetAncestor = Win32API.new("user32.dll", "GetAncestor", "LI", "I")
-      private_constant :GetAncestor
-      GetActiveWindow = Win32API.new("user32.dll", "GetActiveWindow", "", "L")
-      private_constant :GetActiveWindow
-      GetWindowRect = Win32API.new("user32.dll", "GetWindowRect", "LP", "I")
-      private_constant :GetWindowRect
-      ShowWindow = Win32API.new("user32.dll", "ShowWindow", "LI", "I")
-      private_constant :ShowWindow
-      MoveWindow = Win32API.new("user32.dll", "MoveWindow", "LIIIII", "I")
-      private_constant :MoveWindow
-
-      GA_ROOTOWNER = 3
-      private_constant :GA_ROOTOWNER
-      SW_RESTORE = 9
-      private_constant :SW_RESTORE
-      SW_MAXIMIZE = 3
-      private_constant :SW_MAXIMIZE
 
       # Get window position.
       #
@@ -68,7 +48,7 @@ module Eneroth
       #   Left, top, right and bottom.
       def self.rectangle
         rect = [0, 0, 0, 0].pack("L*")
-        GetWindowRect.call(window, rect)
+        User32::GetWindowRect(window, rect)
 
         rect.unpack("L*").map { |e| [e].pack("L").unpack("l").first }
       end
@@ -78,12 +58,49 @@ module Eneroth
       #
       # @return [Integer]
       def self.window
-        # May be Ruby console or other sub-window.
-        window = GetActiveWindow.call
-
-        GetAncestor.call(window, GA_ROOTOWNER)
+        # Active Window may be Ruby console or some other window.
+        User32::GetAncestor(User32::GetActiveWindow(), User32::GA_ROOTOWNER)
       end
       private_class_method :window
+
+      # User32 functionality on Windows.
+      module User32
+        extend Fiddle::Importer
+        dlload "user32"
+
+        GA_ROOTOWNER = 3
+        SW_RESTORE = 9
+        SW_MAXIMIZE = 3
+
+        typealias "DWORD", "unsigned long"
+        typealias "PDWORD", "unsigned long *"
+        typealias "DWORD32", "unsigned long"
+        typealias "DWORD64", "unsigned long long"
+        typealias "WORD", "unsigned short"
+        typealias "PWORD", "unsigned short *"
+        typealias "BOOL", "int"
+        typealias "ATOM", "int"
+        typealias "BYTE", "unsigned char"
+        typealias "PBYTE", "unsigned char *"
+        typealias "UINT", "unsigned int"
+        typealias "ULONG", "unsigned long"
+        typealias "UCHAR", "unsigned char"
+        typealias "HANDLE", "uintptr_t"
+        typealias "PHANDLE", "void*"
+        typealias "PVOID", "void*"
+        typealias "LPCSTR", "char*"
+        typealias "LPSTR", "char*"
+        typealias "HINSTANCE", "unsigned int"
+        typealias "HDC", "unsigned int"
+        typealias "HWND", "unsigned int"
+
+        extern "HWND GetAncestor(HWND, UINT)"
+        extern "HWND GetActiveWindow()"
+        extern "BOOL MoveWindow(HWND, UINT, UINT, UINT, UINT, BOOL)"
+        extern "BOOL ShowWindow(HWND, UINT)"
+        extern "BOOL GetWindowRect(HWND, LPSTR)" # REVIEW: Correct type?
+      end
+      private_constant :User32
     end
   end
 end

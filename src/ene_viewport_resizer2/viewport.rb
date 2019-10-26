@@ -4,6 +4,37 @@ module Eneroth
 
     # Functionality related to SketchUp viewport.
     module Viewport
+      # Get viewport aspect ratio.
+      #
+      # @return [Float]
+      def self.ratio
+        width, height = size
+
+        width.to_f / height
+      end
+
+      # Set viewport aspect ratio.
+      #
+      # @param ratio [Numeric]
+      #
+      # @return [void]
+      def self.ratio=(ratio)
+        Window.restore
+
+        # First try to extend the smaller of the two sides.
+        # Assume OS wont let Window get bigger than available space on screen.
+        width, height = size
+        ratio_ratio = ratio / self.ratio
+        ratio_ratio > 1 ? width = height * ratio : height = width / ratio
+        resize(width.to_i, height.to_i)
+        return if self.ratio == ratio
+
+        # If desired ratio hasn't been reached, try reducing the large side.
+        ratio_ratio = ratio / self.ratio
+        ratio_ratio < 1 ? width *= ratio_ratio : height /= ratio_ratio
+        resize(width.to_i, height.to_i)
+      end
+
       # Set viewport size.
       #
       # @param width [Integer]

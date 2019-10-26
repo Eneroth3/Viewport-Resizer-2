@@ -4,16 +4,6 @@ module Eneroth
   module ViewportResizer2
     # Resize window on Windows.
     module WindowWindows
-      # TODO: Make these constants private.
-      GetAncestor = Win32API.new("user32.dll", "GetAncestor",  "LI", "I")
-      GetActiveWindow = Win32API.new("user32.dll", "GetActiveWindow", "", "L")
-      GetWindowRect = Win32API.new("user32.dll", "GetWindowRect", "LP", "I")
-      ShowWindow = Win32API.new("user32.dll", "ShowWindow", "LI", "I")
-      MoveWindow = Win32API.new("user32.dll", "MoveWindow", "LIIIII", "I")
-
-      GA_ROOTOWNER = 3
-      SW_RESTORE = 9
-      SW_MAXIMIZE = 3
 
       # Maximize window.
       #
@@ -53,7 +43,24 @@ module Eneroth
       end
 
       # Private
-      # TODO: Mark as private
+
+      GetAncestor = Win32API.new("user32.dll", "GetAncestor",  "LI", "I")
+      private_constant :GetAncestor
+      GetActiveWindow = Win32API.new("user32.dll", "GetActiveWindow", "", "L")
+      private_constant :GetActiveWindow
+      GetWindowRect = Win32API.new("user32.dll", "GetWindowRect", "LP", "I")
+      private_constant :GetWindowRect
+      ShowWindow = Win32API.new("user32.dll", "ShowWindow", "LI", "I")
+      private_constant :ShowWindow
+      MoveWindow = Win32API.new("user32.dll", "MoveWindow", "LIIIII", "I")
+      private_constant :MoveWindow
+
+      GA_ROOTOWNER = 3
+      private_constant :GA_ROOTOWNER
+      SW_RESTORE = 9
+      private_constant :SW_RESTORE
+      SW_MAXIMIZE = 3
+      private_constant :SW_MAXIMIZE
 
       # Get window position.
       #
@@ -65,6 +72,7 @@ module Eneroth
 
         rect.unpack("L*").map { |e| [e].pack("L").unpack("l").first }
       end
+      private_class_method :rectangle
 
       # Get reference to SketchUp window.
       #
@@ -75,6 +83,7 @@ module Eneroth
 
         GetAncestor.call(window, GA_ROOTOWNER)
       end
+      private_class_method :window
     end
   end
 end

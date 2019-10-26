@@ -1,13 +1,8 @@
 module Eneroth
   module ViewportResizer2
-    if Sketchup.platform == :platform_win
-      Sketchup.require "#{PLUGIN_ROOT}/window_windows.rb"
-      Window = WindowWindows
-    else
-      Sketchup.require "#{PLUGIN_ROOT}/window_mac.rb"
-      Window = WindowMac
-    end
+    Sketchup.require "#{PLUGIN_ROOT}/window.rb"
 
+    # Functionality related to SketchUp viewport.
     module Viewport
       # Set viewport size.
       #

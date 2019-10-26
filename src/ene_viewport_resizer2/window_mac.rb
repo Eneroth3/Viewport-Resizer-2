@@ -1,6 +1,6 @@
 module Eneroth
   module ViewportResizer2
-    # Resize window on Mac.
+    # SketchUp window functionality on iOS.
     module WindowMac
       # Maximize window.
       #

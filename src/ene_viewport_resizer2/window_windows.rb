@@ -2,7 +2,7 @@ require "fiddle/import"
 
 module Eneroth
   module ViewportResizer2
-    # Resize window on Windows.
+    # SketchUp window functionality on Windows.
     module WindowWindows
       # Maximize window.
       #
@@ -68,8 +68,13 @@ module Eneroth
         extend Fiddle::Importer
         dlload "user32"
 
+        # GetAncestor root owner.
         GA_ROOTOWNER = 3
+
+        # ShowWindow restore.
         SW_RESTORE = 9
+
+        # ShowWindow maximize.
         SW_MAXIMIZE = 3
 
         typealias "DWORD", "unsigned long"

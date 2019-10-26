@@ -3,7 +3,7 @@ require: rubocop-sketchup
 AllCops:
   DisplayCopNames: true
   SketchUp:
-    TargetSketchUpVersion: 2018
+    TargetSketchUpVersion: 2017
 
 Metrics/AbcSize:
   Enabled: false
@@ -17,7 +17,6 @@ Metrics/PerceivedComplexity:
 # Aim for 10 lines and less in each methods but accept slightly longer ones.
 Metrics/MethodLength:
   Max: 20
-
 
 # x, y and z used by SketchUp API.
 Naming/UncommunicativeMethodParamName:
@@ -63,9 +62,8 @@ SketchupDeprecations:
 SketchupPerformance:
   Enabled: true
 
-# Library, not extension.
 SketchupRequirements:
-  Enabled: false
+  Enabled: true
 
 SketchupSuggestions:
   Enabled: true

@@ -5,7 +5,7 @@ module Eneroth
     # Resize window on Windows.
     module WindowWindows
       # TODO: Make these constants private.
-      ###GetAncestor = Win32API.new("user32.dll", "GetAncestor", "", "L") # TODO: Set correct parameters!
+      GetAncestor = Win32API.new("user32.dll", "GetAncestor",  "LI", "I")
       GetActiveWindow = Win32API.new("user32.dll", "GetActiveWindow", "", "L")
       GetWindowRect = Win32API.new("user32.dll", "GetWindowRect", "LP", "I")
       ShowWindow = Win32API.new("user32.dll", "ShowWindow", "LI", "I")
@@ -73,8 +73,7 @@ module Eneroth
         # May be Ruby console or other sub-window.
         window = GetActiveWindow.call
 
-        # TODO: Implement.
-        ###GetAncestor.call(window, GA_ROOTOWNER)
+        GetAncestor.call(window, GA_ROOTOWNER)
       end
     end
   end

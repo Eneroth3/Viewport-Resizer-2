@@ -21,7 +21,9 @@ module Eneroth
         3.times do
           chrome_size = Window.size.zip(size).map { |w, v| w - v }
           window_size = [width, height].zip(chrome_size).map { |v, c| v + c }
+
           break if window_size == Window.size
+
           Window.resize(*window_size)
         end
       end

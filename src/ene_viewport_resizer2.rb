@@ -2,7 +2,7 @@ require "extensions.rb"
 
 # Eneroth Extensions
 module Eneroth
-  # Eneroth No Padding Zoom
+  # Eneroth Viewport Resizer 2
   module ViewportResizer2
     path = __FILE__
     path.force_encoding("UTF-8") if path.respond_to?(:force_encoding)

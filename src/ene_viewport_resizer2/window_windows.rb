@@ -38,13 +38,13 @@ module Eneroth
       def self.resize(width, height)
         restore
 
-        left, top, _, _ = rectangle
+        left, top = rectangle
         MoveWindow.call(window, left, top, width, height, 1)
       end
 
       # Private
 
-      GetAncestor = Win32API.new("user32.dll", "GetAncestor",  "LI", "I")
+      GetAncestor = Win32API.new("user32.dll", "GetAncestor", "LI", "I")
       private_constant :GetAncestor
       GetActiveWindow = Win32API.new("user32.dll", "GetActiveWindow", "", "L")
       private_constant :GetActiveWindow

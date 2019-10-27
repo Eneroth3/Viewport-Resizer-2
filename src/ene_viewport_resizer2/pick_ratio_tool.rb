@@ -66,7 +66,7 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/Tool.html
       def onCancel(_reason, view)
-        @first_point = nil
+        @first_point ? @first_point = nil : Sketchup.active_model.tools.pop_tool
         view.model.selection.clear
         view.invalidate
         update_status_text

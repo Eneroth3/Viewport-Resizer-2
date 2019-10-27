@@ -2,6 +2,8 @@ require: rubocop-sketchup
 
 AllCops:
   DisplayCopNames: true
+  Exclude:
+    - 'src/*/vendor/**/*'
   SketchUp:
     TargetSketchUpVersion: 2017
 

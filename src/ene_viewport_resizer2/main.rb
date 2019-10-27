@@ -1,6 +1,6 @@
 module Eneroth
   module ViewportResizer2
-    Sketchup.require "#{PLUGIN_ROOT}/viewport.rb"
+    Sketchup.require "#{PLUGIN_ROOT}/pick_ratio.rb"
     # ...
 
     # Reload extension.

@@ -5,8 +5,8 @@ module Eneroth
     # Tool for picking entity or two points, later used to define a ratio.
     #
     # @example
-    #   RatioPickTool.activate { |callback| p callback }
-    class RatioPickTool
+    #   PickRatioTool.activate { |callback| p callback }
+    class PickRatioTool
       include Picker
 
       # Status text for first pick.

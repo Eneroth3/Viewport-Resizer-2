@@ -12,14 +12,43 @@ module Eneroth
        PickRatioTool.activate do |points_or_entity|
           View.reset_aspect_ratio
           ratio = zoom_to(points_or_entity)
+
+          # Memorize view dimensions before changing viewport aspect ratio.
+          view_x = self.view_x
+          view_y = self.view_y
+          aspect_ratio_ratio = ratio / View.aspect_ratio
+
           Viewport.ratio = ratio
-          # TODO: Adjust view to perfectly contain desired ratio.
-          # Keep either vertical or horizontal dimension based on how desired
-          # ratio related to original view ratio.
+
+          # Retain either view width/fov_h or height/fov_v depending on whether
+          # content zoomed to fills view vertically or horizontally.
+          aspect_ratio_ratio > 1 ? (self.view_x = view_x) : (self.view_y = view_y)
         end
       end
 
       # Private
+
+      # REVIEW: Move x and y dimension getter setter to View?
+      def self.view
+        Sketchup.active_model.active_view
+      end
+
+      def self.view_x
+        view.camera.perspective? ? View.fov_h : View.width
+      end
+
+      def self.view_x=(view_x)
+        view.camera.perspective? ? View.set_fov_h(view_x) : View.set_width(view_x)
+      end
+
+      def self.view_y
+        view.camera.perspective? ? View.fov_v : View.height
+      end
+
+      def self.view_y=(view_y)
+        view.camera.perspective? ? View.set_fov_v(view_y) : View.set_height(view_y)
+      end
+      # TODO: Make private
 
       def self.zoom_to(points_or_entity)
         # REVIEW: Have a single method in Zoom class that takes both points or

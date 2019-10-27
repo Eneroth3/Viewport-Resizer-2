@@ -18,6 +18,10 @@ Metrics/PerceivedComplexity:
 Metrics/MethodLength:
   Max: 20
 
+# Need to use camelCase for SketchUp API, otherwise use snake_case.
+Naming/MethodName:
+  Enabled: false
+
 # x, y and z used by SketchUp API.
 Naming/UncommunicativeMethodParamName:
   AllowedNames:

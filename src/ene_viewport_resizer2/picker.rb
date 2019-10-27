@@ -19,8 +19,10 @@ module Eneroth
         entity = ph.best_picked
         selection = Sketchup.active_model.selection
         selection.clear
+
         return unless entity
         return unless valid_pick?(entity)
+
         selection.add(entity)
 
         entity

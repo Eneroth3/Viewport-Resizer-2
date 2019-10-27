@@ -15,7 +15,7 @@ module Eneroth
 
     # Extension object for this extension.
     EXTENSION = SketchupExtension.new(
-      "Eneroth Viewport Resizer 2",
+      "Eneroth Viewport Resizer²",
       File.join(PLUGIN_ROOT, "main")
     )
 

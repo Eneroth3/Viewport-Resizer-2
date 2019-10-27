@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>TITLE</title>
+    <script src="vendor/dialogs/jquery-1.12.4.js"></script>
+    <script src="vendor/dialogs/controls.js"></script>
+    <link rel="stylesheet" type="text/css" href="vendor/dialogs/style.css">
+    <script>
+      // Disable context menu.
+      // TODO: Enable
+      // window.oncontextmenu = function (e) { e.preventDefault() }
+
+      window.onerror = function(message, source, lineno, colno, error) {
+        alert("source:" + lineno + ":" + colno + "\n\n" + message);
+      }
+
+      $(document).ready(function() {
+        window.width_input = document.getElementById('width');
+        window.height_input = document.getElementById('height');
+        window.ratio_input = document.getElementById('ratio');
+        window.size_window_input = document.getElementById('size_window');
+
+        dlgInitControls();
+        sketchup.ready();
+      } );
+
+      function set_values(width, height, ratio, ratio_lock, size_window) {
+        width_input.value = width;
+        height_input.value = height;
+        ratio_input.value = ratio;
+        // ...
+      }
+    </script>
+    <style>
+      table {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      td {
+        padding: 2px;
+      }
+      tr td:first-child {
+        text-align: right;
+      }
+      input[type=text] {
+        width: 100%;
+        margin: 0;
+      }
+
+      #ratio-lock {
+        background: url(images/dlg_chain_bracket.svg);
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: 2em;
+        cursor: pointer;
+      }
+      #ratio-lock:hover {
+        background-image: url(images/dlg_chain_bracket_broken.svg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dlg-content-area">
+      <table>
+        <tr>
+          <td><label for="width">Width</label></td>
+          <td><input id="width" type="text" /></td>
+          <td rowspan="2" id="ratio-lock"></td>
+        </tr>
+        <tr>
+          <td><label for="height">Height</label></td>
+          <td><input id="height" type="text" /></td>
+        </tr>
+        <tr>
+          <td><label for="ratio">Ratio</label></td>
+          <td><input id="ratio" type="text" /></td>
+          <td><a href="javascript: void(0);" class="dlg-callback-pick_ratio">Pick...</a><Td>
+        </tr>
+        <tr>
+          <td><input id="window" type="checkbox" /></td>
+          <td colspan="2"><label for="window">Size window</label></td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>

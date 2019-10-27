@@ -1,7 +1,6 @@
 module Eneroth
   module ViewportResizer2
-    Sketchup.require "#{PLUGIN_ROOT}/pick_ratio.rb"
-    # ...
+    Sketchup.require "#{PLUGIN_ROOT}/dialog.rb"
 
     # Reload extension.
     #
@@ -23,6 +22,15 @@ module Eneroth
       Sketchup.undo if undo
 
       nil
+    end
+
+    unless @loaded
+      @loaded = true
+
+      cmd = UI::Command.new(EXTENSION.name) { Dialog.toggle }
+      cmd.set_validation_proc { Dialog.command_status }
+
+      UI.menu("Plugins").add_item(cmd)
     end
   end
 end

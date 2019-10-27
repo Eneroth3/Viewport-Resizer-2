@@ -10,7 +10,7 @@ module Eneroth
       # Let user pick aspect ratio from view.
       #
       # @return [void]
-      def self.pick_aspect_ratio
+      def self.pick_ratio
         PickRatioTool.activate do |points_or_entity|
           View.reset_aspect_ratio
           ratio = zoom_to(points_or_entity)

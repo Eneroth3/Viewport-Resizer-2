@@ -34,6 +34,9 @@ Naming/UncommunicativeMethodParamName:
     - '_y'
     - '_z'
 
+Layout/AlignHash:
+  EnforcedColonStyle: table
+
 # Let Git client handle file endings.
 Layout/EndOfLine:
   Enabled: false
@@ -53,6 +56,12 @@ Layout/IndentHash:
 # False positives for modules documented in one file but not another, e.g.
 # extension wrapper.
 Style/Documentation:
+  Enabled: false
+
+# Double negation is a handy Ruby idiom to assure a value is a boolean, as there
+# is no to_bool/to_boolean/to_b method. What the cop suggest, !var.nil?, doesn't
+# even cater for boolean false as input.
+Style/DoubleNegation:
   Enabled: false
 
 # Single quotes being faster is hardly measurable and only affects parse time.

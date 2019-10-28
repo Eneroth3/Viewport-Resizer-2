@@ -55,7 +55,8 @@ module Eneroth
       private_constant :SEPARATOR
 
       def self.attach_callbacks
-        @dialog.add_action_callback("ready") { update_dialog_fields }
+        @dialog.add_action_callback("ready") { set_values }
+        @dialog.add_action_callback("onchange") { |_, values| onchange(values) }
         # TODO: Minimize window while using tool.
         @dialog.add_action_callback("pick_ratio") { PickRatio.pick_ratio }
       end
@@ -83,6 +84,20 @@ module Eneroth
       end
       private_class_method :format_ratio
 
+      def self.onchange(values)
+        puts "onchange"
+        p values
+        # TODO: Apply values.
+        # Debug. Has to be more advanced and probably know what field was
+        # changed to properly interpret the values.
+        Viewport.resize(values["width"].to_i, values["height"].to_i)
+
+        # REVIEW: Explicitly update other fields, or let observer handle that?
+        # TODO: Focus dialog. Windows seem to focus main SU window when resizing
+        # it.
+      end
+      private_class_method :onchange
+
       def self.parse_ratio(input, old_value)
         # If input value starts with ~, assume user has not edited it, and that
         # existing value should be kept.
@@ -92,19 +107,20 @@ module Eneroth
       end
       private_class_method :parse_ratio
 
-      def self.update_dialog_fields
-        js = "set_values("\
-          "#{Sketchup.active_model.active_view.vpwidth},"\
-          "#{Sketchup.active_model.active_view.vpheight},"\
-          "#{format_ratio(View.aspect_ratio).inspect});"
-        @dialog.execute_script(js)
+      def self.set_values
+        values = {
+          width:  Sketchup.active_model.active_view.vpwidth,
+          height: Sketchup.active_model.active_view.vpheight,
+          ratio:  format_ratio(View.aspect_ratio)
+        }
+        @dialog.execute_script("set_values(#{values.to_json})")
       end
-      private_class_method :update_dialog_fields
+      private_class_method :set_values
 
-      # TODO: Read values onchange.
       # TODO: Honor "window size" checkbox. Or remove it?
       # TODO: Implement ratio lock.
-      # TODO: update_dialog_fields from observer on view change.
+      # TODO: set_values from observer on view change.
+      # TODO: Focus first field when showing dialog.
     end
   end
 end

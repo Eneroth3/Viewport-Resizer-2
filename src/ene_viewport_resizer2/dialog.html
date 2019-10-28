@@ -15,22 +15,37 @@
         alert("source:" + lineno + ":" + colno + "\n\n" + message);
       }
 
+      function set_values(values) {
+        width_input.value = values.width;
+        height_input.value = values.height;
+        ratio_input.value = values.ratio;
+        // ...
+      }
+
+      function onchange() {
+        sketchup.onchange({
+          width: width_input.value,
+          height: height_input.value,
+          ratio: ratio_input.value
+          // ...
+        })
+      }
+
       $(document).ready(function() {
         window.width_input = document.getElementById('width');
         window.height_input = document.getElementById('height');
         window.ratio_input = document.getElementById('ratio');
         window.size_window_input = document.getElementById('size_window');
 
+        // TODO: Also call when pressing enter.
+        // REVIEW: How comfortable are users with field that don't react
+        // until you press enter or change focus?
+        width_input.onchange = height_input.onchange = ratio_input.onchange =
+          size_window_input.onchange = onchange;
+
         dlgInitControls();
         sketchup.ready();
       } );
-
-      function set_values(width, height, ratio, ratio_lock, size_window) {
-        width_input.value = width;
-        height_input.value = height;
-        ratio_input.value = ratio;
-        // ...
-      }
     </script>
     <style>
       table {
@@ -79,7 +94,7 @@
           <td><a href="javascript: void(0);" class="dlg-callback-pick_ratio">Pick...</a><Td>
         </tr>
         <tr>
-          <td><input id="window" type="checkbox" /></td>
+          <td><input id="size_window" type="checkbox" /></td>
           <td colspan="2"><label for="window">Size window</label></td>
         </tr>
       </table>

@@ -50,6 +50,10 @@ module Eneroth
 
       # Private
 
+      # Decimal separator.
+      SEPARATOR = Sketchup::RegionalSettings.decimal_separator
+      private_constant :SEPARATOR
+
       def self.attach_callbacks
         @dialog.add_action_callback("ready") { update_dialog_fields }
         # TODO: Minimize window while using tool.
@@ -71,20 +75,34 @@ module Eneroth
       end
       private_class_method :create_dialog
 
+      def self.format_ratio(ratio)
+        decimals = 2
+        rounded = ratio.round(decimals) != ratio
+
+        "#{rounded ? '~' : ''}#{ratio.round(decimals)}".sub('.', SEPARATOR)
+      end
+      private_class_method :format_ratio
+
+      def self.parse_ratio(input, old_value)
+        # If input value starts with ~, assume user has not edited it, and that
+        # existing value should be kept.
+        return old_value if input.start_with?("~")
+
+        input.sub(SEPARATOR, ".").to_f
+      end
+      private_class_method :parse_ratio
+
       def self.update_dialog_fields
         js = "set_values("\
           "#{Sketchup.active_model.active_view.vpwidth},"\
           "#{Sketchup.active_model.active_view.vpheight},"\
-          "#{View.aspect_ratio});"
-        # TODO: Format ratio nicely. Localize decimal point. Show 2 decimals.
-        # Prepend ~ if not exact. When parsing, keep current value if form field
-        # value starts with ~.
+          "#{format_ratio(View.aspect_ratio).inspect});"
         @dialog.execute_script(js)
       end
       private_class_method :update_dialog_fields
 
       # TODO: Read values onchange.
-      # TODO: Honor "window size" checkbox.
+      # TODO: Honor "window size" checkbox. Or remove it?
       # TODO: Implement ratio lock.
       # TODO: update_dialog_fields from observer on view change.
     end

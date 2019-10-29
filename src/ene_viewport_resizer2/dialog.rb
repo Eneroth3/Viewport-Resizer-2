@@ -6,8 +6,6 @@ module Eneroth
 
     # Dialog window showing view dimensions and controls.
     module Dialog
-      @lock_ratio = false
-
       # Close viewport resize dialog.
       #
       # @return [void]
@@ -37,8 +35,22 @@ module Eneroth
         return if height == self.height
         return if height.zero?
 
-        width = @lock_ratio ? (height * View.aspect_ratio).to_i : self.width
+        width = locked_ratio? ? (height * View.aspect_ratio).to_i : self.width
         Viewport.resize(width, height)
+      end
+
+      # Get ratio lock state.
+      #
+      # @return [Boolean]
+      def self.locked_ratio?
+         Sketchup.read_default(PLUGIN_ID, "locked_ratio", true)
+      end
+
+      # Set ratio lock state.
+      #
+      # @param locked_ratio [Boolean]
+      def self.locked_ratio=(locked_ratio)
+        Sketchup.write_default(PLUGIN_ID, "locked_ratio", locked_ratio)
       end
 
       # Show viewport resize dialog.
@@ -119,7 +131,7 @@ module Eneroth
         return if width == self.width
         return if height.zero?
 
-        height = @lock_ratio ? (width / View.aspect_ratio).to_i : self.height
+        height = locked_ratio? ? (width / View.aspect_ratio).to_i : self.height
         Viewport.resize(width, height)
       end
 
@@ -135,7 +147,7 @@ module Eneroth
         @dialog.add_action_callback("width") { |_, v| self.width = v }
         @dialog.add_action_callback("height") { |_, v| self.height = v }
         @dialog.add_action_callback("ratio") { |_, v| self.ratio = v }
-        @dialog.add_action_callback("lock") { |_, v| @lock_ratio = v }
+        @dialog.add_action_callback("lock") { |_, v| self.locked_ratio = v }
         # TODO: Minimize window while using tool.
         @dialog.add_action_callback("pick_ratio") { PickRatio.pick_ratio }
         @dialog.set_on_closed { ViewNotifier.remove_observer(self) }
@@ -161,7 +173,7 @@ module Eneroth
           width:  width,
           height: height,
           ratio:  ratio,
-          lock:   @lock_ratio
+          lock:   locked_ratio?
         }
         @dialog.execute_script("update_fields(#{values.to_json})")
       end

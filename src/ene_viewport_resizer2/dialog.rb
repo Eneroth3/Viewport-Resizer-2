@@ -159,7 +159,6 @@ module Eneroth
 
       # TODO: Honor "window size" checkbox. Or remove it?
       # TODO: Implement ratio lock.
-      # TODO: Focus first field when showing dialog.
     end
   end
 end

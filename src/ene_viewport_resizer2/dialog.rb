@@ -6,6 +6,8 @@ module Eneroth
 
     # Dialog window showing view dimensions and controls.
     module Dialog
+      @lock_ratio = false
+
       # Close viewport resize dialog.
       #
       # @return [void]
@@ -31,9 +33,12 @@ module Eneroth
       #
       # @param height [#to_i]
       def self.height=(height)
+        height = height.to_i
         return if height == self.height
+        return if height.zero?
 
-        Viewport.resize(width, height.to_i)
+        width = @lock_ratio ? (height * View.aspect_ratio).to_i : self.width
+        Viewport.resize(width, height)
       end
 
       # Show viewport resize dialog.
@@ -110,9 +115,12 @@ module Eneroth
       #
       # @param width [#to_i]
       def self.width=(width)
+        width = width.to_i
         return if width == self.width
+        return if height.zero?
 
-        Viewport.resize(width.to_i, height)
+        height = @lock_ratio ? (width / View.aspect_ratio).to_i : self.height
+        Viewport.resize(width, height)
       end
 
       # Private
@@ -127,6 +135,7 @@ module Eneroth
         @dialog.add_action_callback("width") { |_, v| self.width = v }
         @dialog.add_action_callback("height") { |_, v| self.height = v }
         @dialog.add_action_callback("ratio") { |_, v| self.ratio = v }
+        @dialog.add_action_callback("lock") { |_, v| @lock_ratio = v }
         # TODO: Minimize window while using tool.
         @dialog.add_action_callback("pick_ratio") { PickRatio.pick_ratio }
         @dialog.set_on_closed { ViewNotifier.remove_observer(self) }
@@ -151,14 +160,14 @@ module Eneroth
         values = {
           width:  width,
           height: height,
-          ratio:  ratio
+          ratio:  ratio,
+          lock:   @lock_ratio
         }
         @dialog.execute_script("update_fields(#{values.to_json})")
       end
       private_class_method :update_fields
 
       # TODO: Honor "window size" checkbox. Or remove it?
-      # TODO: Implement ratio lock.
     end
   end
 end

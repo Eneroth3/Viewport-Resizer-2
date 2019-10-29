@@ -19,6 +19,25 @@
         width_input.value = values.width;
         height_input.value = values.height;
         ratio_input.value = values.ratio;
+        set_ratio_lock(values.lock);
+      }
+
+      function set_ratio_lock(state) {
+        if (state) {
+          ratio_lock_control.setAttribute('data-checked', '');
+        } else if (get_ratio_lock()) {
+          ratio_lock_control.removeAttribute('data-checked');
+        }
+      }
+
+      function get_ratio_lock() {
+        return ratio_lock_control.hasAttribute('data-checked');
+      }
+
+      function click_ratio_lock() {
+        state = !get_ratio_lock();
+        set_ratio_lock(state)
+        sketchup.lock(state)
       }
 
       $(document).ready(function() {
@@ -26,10 +45,12 @@
         window.height_input = document.getElementById('height');
         window.ratio_input = document.getElementById('ratio');
         window.size_window_input = document.getElementById('size_window');
+        window.ratio_lock_control = document.getElementById('ratio-lock');
 
         width_input.onchange = function() { sketchup.width(width_input.value) };
         height_input.onchange = function() { sketchup.height(height_input.value) };
         ratio_input.onchange = function() { sketchup.ratio(ratio_input.value) };
+        ratio_lock_control.onclick = click_ratio_lock;
 
         dlgInitControls();
         sketchup.ready();
@@ -57,14 +78,17 @@
       }
 
       #ratio-lock {
-        background: url(images/dlg_chain_bracket.svg);
+        background-image: url(images/dlg_chain_bracket_broken.svg);
         background-repeat: no-repeat;
         background-position: center center;
         background-size: 2em;
         cursor: pointer;
       }
       #ratio-lock:hover {
-        background-image: url(images/dlg_chain_bracket_broken.svg);
+        opacity: 0.6;
+      }
+      #ratio-lock[data-checked] {
+        background-image: url(images/dlg_chain_bracket.svg);
         /* TODO: Pre-load icons. */
       }
     </style>

@@ -2,6 +2,7 @@ module Eneroth
   module ViewportResizer2
     Sketchup.require "#{PLUGIN_ROOT}/pick_ratio.rb"
     Sketchup.require "#{PLUGIN_ROOT}/viewport.rb"
+    Sketchup.require "#{PLUGIN_ROOT}/view_notifier.rb"
 
     module Dialog
       # Close viewport resize dialog.
@@ -48,6 +49,12 @@ module Eneroth
         !!@dialog && @dialog.visible?
       end
 
+      # @api
+      # @see https://ruby.sketchup.com/Sketchup/ViewObserver.html
+      def self.onViewChanged(_view)
+        set_values
+      end
+
       # Private
 
       # Decimal separator.
@@ -55,10 +62,12 @@ module Eneroth
       private_constant :SEPARATOR
 
       def self.attach_callbacks
+        ViewNotifier.add_observer(self)
         @dialog.add_action_callback("ready") { set_values }
         @dialog.add_action_callback("onchange") { |_, values| onchange(values) }
         # TODO: Minimize window while using tool.
         @dialog.add_action_callback("pick_ratio") { PickRatio.pick_ratio }
+        @dialog.set_on_closed { ViewNotifier.remove_observer(self) }
       end
       private_class_method :attach_callbacks
 
@@ -85,8 +94,6 @@ module Eneroth
       private_class_method :format_ratio
 
       def self.onchange(values)
-        puts "onchange"
-        p values
         # TODO: Apply values.
         # Debug. Has to be more advanced and probably know what field was
         # changed to properly interpret the values.
@@ -119,7 +126,6 @@ module Eneroth
 
       # TODO: Honor "window size" checkbox. Or remove it?
       # TODO: Implement ratio lock.
-      # TODO: set_values from observer on view change.
       # TODO: Focus first field when showing dialog.
     end
   end

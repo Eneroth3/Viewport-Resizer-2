@@ -161,7 +161,7 @@ module Eneroth
           resizable:       false,
           style:           UI::HtmlDialog::STYLE_DIALOG,
           width:           220,
-          height:          220,
+          height:          190,
           left:            200,
           top:             100
         )
@@ -178,8 +178,6 @@ module Eneroth
         @dialog.execute_script("update_fields(#{values.to_json})")
       end
       private_class_method :update_fields
-
-      # TODO: Honor "window size" checkbox. Or remove it?
     end
   end
 end

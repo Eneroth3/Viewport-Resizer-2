@@ -19,6 +19,22 @@ module Eneroth
         opened? ? MF_CHECKED : MF_UNCHECKED
       end
 
+      # Get current height.
+      #
+      # @return [Integer]
+      def self.height
+        Sketchup.active_model.active_view.vpheight
+      end
+
+      # Set height.
+      #
+      # @param height [#to_i]
+      def self.height=(height)
+        return if height == self.height
+
+        Viewport.resize(width, height.to_i)
+      end
+
       # Show viewport resize dialog.
       #
       # @return [void]
@@ -33,6 +49,32 @@ module Eneroth
         end
 
         nil
+      end
+
+      # Get current ratio.
+      #
+      # @return [String]
+      def self.ratio
+        ratio = View.aspect_ratio
+        decimals = 2
+        rounded = ratio.round(decimals) != ratio
+
+        "#{rounded ? '~' : ''}#{ratio.round(decimals)}".sub(".", SEPARATOR)
+      end
+
+      # Set ratio.
+      #
+      # @param ratio [String]
+      def self.ratio=(ratio)
+        return if ratio == self.ratio
+        # REVIEW: Accept values starting with ~ ?
+        return if ratio.start_with?("~")
+
+        ratio = ratio.sub(SEPARATOR, ".").to_f
+
+        return if ratio.zero?
+
+        Viewport.ratio = ratio
       end
 
       # Toggle viewport resize dialog.
@@ -52,7 +94,24 @@ module Eneroth
       # @api
       # @see https://ruby.sketchup.com/Sketchup/ViewObserver.html
       def self.onViewChanged(_view)
-        set_values
+        # Only called in 2019.2 on viewport resize.
+        update_fields
+      end
+
+      # Get width.
+      #
+      # @return [Integer]
+      def self.width
+        Sketchup.active_model.active_view.vpwidth
+      end
+
+      # Set width.
+      #
+      # @param width [#to_i]
+      def self.width=(width)
+        return if width == self.width
+
+        Viewport.resize(width.to_i, height)
       end
 
       # Private
@@ -63,8 +122,10 @@ module Eneroth
 
       def self.attach_callbacks
         ViewNotifier.add_observer(self)
-        @dialog.add_action_callback("ready") { set_values }
-        @dialog.add_action_callback("onchange") { |_, values| onchange(values) }
+        @dialog.add_action_callback("ready") { update_fields }
+        @dialog.add_action_callback("width") { |_, v| self.width = v }
+        @dialog.add_action_callback("height") { |_, v| self.height = v }
+        @dialog.add_action_callback("ratio") { |_, v| self.ratio = v }
         # TODO: Minimize window while using tool.
         @dialog.add_action_callback("pick_ratio") { PickRatio.pick_ratio }
         @dialog.set_on_closed { ViewNotifier.remove_observer(self) }
@@ -85,44 +146,15 @@ module Eneroth
       end
       private_class_method :create_dialog
 
-      def self.format_ratio(ratio)
-        decimals = 2
-        rounded = ratio.round(decimals) != ratio
-
-        "#{rounded ? '~' : ''}#{ratio.round(decimals)}".sub('.', SEPARATOR)
-      end
-      private_class_method :format_ratio
-
-      def self.onchange(values)
-        # TODO: Apply values.
-        # Debug. Has to be more advanced and probably know what field was
-        # changed to properly interpret the values.
-        Viewport.resize(values["width"].to_i, values["height"].to_i)
-
-        # REVIEW: Explicitly update other fields, or let observer handle that?
-        # TODO: Focus dialog. Windows seem to focus main SU window when resizing
-        # it.
-      end
-      private_class_method :onchange
-
-      def self.parse_ratio(input, old_value)
-        # If input value starts with ~, assume user has not edited it, and that
-        # existing value should be kept.
-        return old_value if input.start_with?("~")
-
-        input.sub(SEPARATOR, ".").to_f
-      end
-      private_class_method :parse_ratio
-
-      def self.set_values
+      def self.update_fields
         values = {
-          width:  Sketchup.active_model.active_view.vpwidth,
-          height: Sketchup.active_model.active_view.vpheight,
-          ratio:  format_ratio(View.aspect_ratio)
+          width:  width,
+          height: height,
+          ratio:  ratio
         }
-        @dialog.execute_script("set_values(#{values.to_json})")
+        @dialog.execute_script("update_fields(#{values.to_json})")
       end
-      private_class_method :set_values
+      private_class_method :update_fields
 
       # TODO: Honor "window size" checkbox. Or remove it?
       # TODO: Implement ratio lock.

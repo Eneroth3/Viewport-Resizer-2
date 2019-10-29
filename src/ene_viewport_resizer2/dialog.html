@@ -15,20 +15,10 @@
         alert("source:" + lineno + ":" + colno + "\n\n" + message);
       }
 
-      function set_values(values) {
+      function update_fields(values) {
         width_input.value = values.width;
         height_input.value = values.height;
         ratio_input.value = values.ratio;
-        // ...
-      }
-
-      function onchange() {
-        sketchup.onchange({
-          width: width_input.value,
-          height: height_input.value,
-          ratio: ratio_input.value
-          // ...
-        })
       }
 
       $(document).ready(function() {
@@ -37,11 +27,9 @@
         window.ratio_input = document.getElementById('ratio');
         window.size_window_input = document.getElementById('size_window');
 
-        // TODO: Also call when pressing enter.
-        // REVIEW: How comfortable are users with field that don't react
-        // until you press enter or change focus?
-        width_input.onchange = height_input.onchange = ratio_input.onchange =
-          size_window_input.onchange = onchange;
+        width_input.onchange = function() { sketchup.width(width_input.value) };
+        height_input.onchange = function() { sketchup.height(height_input.value) };
+        ratio_input.onchange = function() { sketchup.ratio(ratio_input.value) };
 
         dlgInitControls();
         sketchup.ready();

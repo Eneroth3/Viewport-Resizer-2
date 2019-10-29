@@ -50,7 +50,7 @@ module Eneroth
         end
 
         def onOpenModel(model)
-          model.pages.add_observer(VIEW_OBSERVER)
+          model.active_view.add_observer(VIEW_OBSERVER)
         end
       end
 

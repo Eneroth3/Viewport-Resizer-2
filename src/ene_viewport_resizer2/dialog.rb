@@ -4,6 +4,7 @@ module Eneroth
     Sketchup.require "#{PLUGIN_ROOT}/viewport.rb"
     Sketchup.require "#{PLUGIN_ROOT}/view_notifier.rb"
 
+    # Dialog window showing view dimensions and controls.
     module Dialog
       # Close viewport resize dialog.
       #

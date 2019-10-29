@@ -6,6 +6,7 @@ module Eneroth
     Sketchup.require "#{PLUGIN_ROOT}/vendor/view_lib/view"
     Sketchup.require "#{PLUGIN_ROOT}/vendor/view_lib/zoom"
 
+    # User action for aspect picking ratio from model.
     module PickRatio
       # Let user pick aspect ratio from view.
       #

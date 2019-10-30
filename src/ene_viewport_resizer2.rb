@@ -22,7 +22,7 @@ module Eneroth
     EXTENSION.creator     = "Eneroth"
     EXTENSION.description =
       "Resize viewport."
-    EXTENSION.version     = "1.0.0"
+    EXTENSION.version     = "1.0.1"
     EXTENSION.copyright   = "2019, #{EXTENSION.creator}"
     Sketchup.register_extension(EXTENSION, true)
   end

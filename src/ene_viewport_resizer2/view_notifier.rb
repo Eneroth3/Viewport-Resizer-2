@@ -1,5 +1,7 @@
 module Eneroth
   module ViewportResizer2
+    require "set"
+
     # Wrapper for ViewObserver that attaches the observer to each new model.
     # REVIEW: Make general solution for all observers.
     class ViewNotifier

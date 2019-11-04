@@ -88,8 +88,8 @@ module Eneroth
         # REVIEW: Accept values starting with ~ ?
         return if ratio.start_with?("~")
 
-        ratio = ratio.sub(SEPARATOR, ".").to_f
-
+        division = ratio.sub(SEPARATOR, ".").split(/:/).map(&:to_f)
+        ratio = division[0] / (division[1] || 1)
         return if ratio.zero?
 
         Viewport.ratio = ratio

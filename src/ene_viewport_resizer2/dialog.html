@@ -47,8 +47,11 @@
         window.ratio_lock_control = document.getElementById('ratio-lock');
 
         width_input.onchange = function() { sketchup.width(width_input.value) };
+        width_input.onkeydown = function(e) { if (e.key == 'Enter') sketchup.width(width_input.value) };
         height_input.onchange = function() { sketchup.height(height_input.value) };
+        height_input.onkeydown = function(e) { if (e.key == 'Enter') sketchup.height(height_input.value) };
         ratio_input.onchange = function() { sketchup.ratio(ratio_input.value) };
+        ratio_input.onkeydown = function(e) { if (e.key == 'Enter') sketchup.ratio(ratio_input.value) };
         ratio_lock_control.onclick = click_ratio_lock;
 
         dlgInitControls();

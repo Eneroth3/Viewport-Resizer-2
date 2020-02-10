@@ -61,7 +61,7 @@ module Eneroth
           @dialog.bring_to_front
         else
           create_dialog unless @dialog
-          @dialog.set_url("#{PLUGIN_ROOT}/dialog.html")
+          @dialog.set_file("#{PLUGIN_ROOT}/dialog.html")
           attach_callbacks
           @dialog.show
         end

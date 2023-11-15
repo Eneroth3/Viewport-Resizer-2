@@ -42,6 +42,11 @@ module Eneroth
       #
       # @return void
       def self.resize(width, height)
+        if Sketchup.respond_to?(:resize_viewport)
+          Sketchup.resize_viewport(Sketchup.active_model, width, height)
+          return
+        end
+
         # Repeat a few times as changing window size can move around toolbar and
         # make window chrome thicker.
         3.times do

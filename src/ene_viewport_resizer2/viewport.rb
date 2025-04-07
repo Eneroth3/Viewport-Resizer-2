@@ -44,6 +44,10 @@ module Eneroth
       def self.resize(width, height)
         if Sketchup.respond_to?(:resize_viewport)
           Sketchup.resize_viewport(Sketchup.active_model, width, height)
+
+          # HACK: resize_viewport does not trigger onViewChanged.
+          Dialog.onViewChanged(Sketchup.active_model.active_view) if Dialog.opened?
+
           return
         end
 
